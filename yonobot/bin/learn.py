@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-import yonobot
+from yonobot import yonobot
 import datetime
 
 if __name__ == '__main__':

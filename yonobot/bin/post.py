@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-import yonobot
+from yonobot import yonobot
 
 if __name__ == '__main__':
     bot = yonobot.YonoBot()

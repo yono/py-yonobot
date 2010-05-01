@@ -6,7 +6,7 @@ from HTMLParser import HTMLParser
 import os
 import urllib2
 import twoauth
-import markovchains
+from markovchains import markovchains
 import twilogparser
 
 def parse_tweet(text):
