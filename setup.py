@@ -8,5 +8,6 @@ setup(
     version="0.1",
     packages=['yonobot'],
     scripts=['yonobot/bin/post.py',
-             'yonobot/bin/learn.py'],
+             'yonobot/bin/learn.py',
+             'yonobot/bin/reply.py'],
 )

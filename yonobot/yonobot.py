@@ -15,8 +15,8 @@ def parse_tweet(text):
 
 class YonoBot(object):
     def __init__(self):
-        BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-        self.inifile = os.path.join(BASE_DIR, 'settings.ini')
+        self.BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+        self.inifile = os.path.join(self.BASE_DIR, 'settings.ini')
         self.t_ini = self._load_ini('twitter')
         self.m_ini = self._load_ini('markov')
         self.base_url = "http://twilog.org/%s/date-" % (self.t_ini['user'])
@@ -69,6 +69,30 @@ class YonoBot(object):
 
     def post(self):
         self.api.status_update(self.m.make_sentence(user=self.t_ini['user']))
+    
+    def reply_to_mentions(self):
+        since_id = self.get_since_id()
+        mentions = self.api.mentions(since_id=since_id)
+
+        if len(mentions) > 0:
+            for status in mentions:
+                screen_name = status['user']['screen_name']
+                text = self.m.make_sentence(user=self.t_ini['user'])
+                text = "@%s %s" % (screen_name, text)
+                self.api.status_update(text)
+            last_since_id = mentions[-1]['id']
+            self.save_since_id(last_since_id)
+ 
+    def get_since_id(self):
+        file = open(os.path.join(self.BASE_DIR, 'last_since_id.txt'))
+        since_id = int(file.read())
+        file.close()
+        return since_id
+
+    def save_since_id(self, last_since_id):
+        file = open(os.path.join(self.BASE_DIR, 'last_since_id.txt'), 'w')
+        file.write(str(last_since_id))
+        file.close()
 
 if __name__ == "__main__":
     bot = YonoBot()
