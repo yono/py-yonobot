@@ -1,21 +1,13 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-import os
 import datetime
 from ConfigParser import SafeConfigParser
+from HTMLParser import HTMLParser
+import os
+import urllib2
 import twoauth
-from mechanize import Browser
-from BeautifulSoup import BeautifulSoup, NavigableString, Declaration, Comment
 import markovchains
-
-def getNavigableStrings(soup):
-    if isinstance(soup, NavigableString):
-        if type(soup) not in (Comment, Declaration) and soup.strip():
-            yield soup
-    elif soup.name not in ('script','style'):
-        for c in soup.contents:
-            for g in getNavigableStrings(c):
-                yield g
+import twilogparser
 
 def parse_tweet(text):
     reply = re.compile(u'@.*?')
@@ -36,6 +28,7 @@ class YonoBot(object):
                            self.t_ini['access_token'], 
                            self.t_ini['access_token_secret']
                         )
+        self.parser = twilogparser.TwilogParser()
 
     def _load_ini(self,category):
         parser = SafeConfigParser()
@@ -61,17 +54,14 @@ class YonoBot(object):
 
     def crawl_twilog(self, aday):
         url = "%s%s" % (self.base_url,self.get_date_url(aday))
-        br = Browser()
 
-        br.open(url)
-        body = unicode(br.response().read(), br.encoding(), 'ignore')
-        soup = BeautifulSoup(body)
+        fp = urllib2.urlopen(url)
+        body = unicode(fp.read())
 
-        tweets = soup.findAll('p', {"class":"tl-text"})
-        return [''.join(getNavigableStrings(t)) for t in tweets]
+        self.parser.feed(unicode(body))
+        return self.parser.sentences
 
-    def learn(self):
-        tweets = self.crawl_twilog()
+    def learn(self, tweets):
         for tweet in tweets:
             sentences = tweet.split(u'。')
             for sentence in sentences:
@@ -82,5 +72,6 @@ class YonoBot(object):
 
 if __name__ == "__main__":
     bot = YonoBot()
-    #bot.post()
-    print bot.get_date_url()
+    yesterday = datetime.date.today() - datetime.timedelta(days=1)
+    results = bot.crawl_twilog(yesterday)
+    print '\n'.join(results)

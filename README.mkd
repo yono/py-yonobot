@@ -6,12 +6,12 @@ yonobot は Twitter に定期的に発言する Bot です。
 収集し、収集結果に対してマルコフ連鎖を用いることで新しい発言を組み立てます。
 
 ## Requirement
-- mechanize
-- BeautifulSoup
+
 - [twoauth](http://www.techno-st.net/wiki/Python-twoauth)
 - [markovchains](http://github.com/yono/python-markovchains)
 
 ## Usage
+
 発言するには markovchains のセットアップと、OAuth の準備が必要です。
 
 1. 発言を収集
