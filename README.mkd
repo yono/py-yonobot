@@ -15,6 +15,9 @@ yonobot は Twitter に定期的に発言する Bot です。
 発言するには markovchains のセットアップと、OAuth の準備が必要です。
 
 1. 発言を収集
+
     % python learn.py
+
 2. 発言をポスト
+
     % python post.py
