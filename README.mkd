@@ -1,6 +1,7 @@
 # yonobot
 
 yonobot は Twitter に定期的に発言する Bot です。
+
 [@yono](http://twitter.com/yono/) の発言を [twilog](http://twilog.org/) から
 収集し、収集結果に対してマルコフ連鎖を用いることで新しい発言を組み立てます。
 
@@ -12,6 +13,7 @@ yonobot は Twitter に定期的に発言する Bot です。
 
 ## Usage
 発言するには markovchains のセットアップと、OAuth の準備が必要です。
+
 1. 発言を収集
     % python learn.py
 2. 発言をポスト
