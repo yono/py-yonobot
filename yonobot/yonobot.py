@@ -65,7 +65,7 @@ class YonoBot(object):
         for tweet in tweets:
             sentences = tweet.split(u'。')
             for sentence in sentences:
-                m.analyze_sentence(sentence+u'。', self.t_ini['user'])
+                self.m.analyze_sentence(sentence+u'。', self.t_ini['user'])
 
     def post(self):
         self.api.status_update(self.m.make_sentence(user=self.t_ini['user']))
