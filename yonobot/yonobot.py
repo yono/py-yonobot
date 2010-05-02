@@ -23,7 +23,7 @@ def parse_tweet(text):
     text = text.replace(u'」', '')
     text = text.replace(u'？', u'?')
     text = text.replace(u'！', u'!')
-    print text 
+    return text 
 
 class YonoBot(object):
     def __init__(self):
@@ -125,7 +125,7 @@ class YonoBot(object):
         new_followers = set(followers_dict).difference(set(friends_dict))
 
         for new_follower in new_followers:
-            bot.api.friends_create(user=new_follower)
+            self.api.friends_create(user=new_follower)
 
 if __name__ == "__main__":
     bot = YonoBot()
