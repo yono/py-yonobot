@@ -111,6 +111,22 @@ class YonoBot(object):
         file.write(str(last_since_id))
         file.close()
 
+    def follow_users(self):
+        followers_dict = {}
+        followers = bot.api.followers_ids()
+        for follower in followers:
+            followers_dict[follower] = 0
+
+        friends_dict = {}
+        friends = bot.api.friends_ids()
+        for friend in friends:
+            friends_dict[friend] = 0
+
+        new_followers = set(followers_dict).difference(set(friends_dict))
+
+        for new_follower in new_followers:
+            bot.api.friends_create(user=new_follower)
+
 if __name__ == "__main__":
     bot = YonoBot()
     yesterday = datetime.date.today() - datetime.timedelta(days=1)
