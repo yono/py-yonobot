@@ -10,8 +10,20 @@ from markovchains import markovchains
 import twilogparser
 
 def parse_tweet(text):
-    reply = re.compile(u'@.*?')
-    return reply.sub(' ', text)
+    if not self.reply:
+        reply = re.compile(u'@[\S]+')
+    if not self.url:
+        url = re.compile(r's?https?://[-_.!~*\'()a-zA-Z0-9;/?:@&=+$,%#]+',re.I)
+
+    text = reply.sub('', line)
+    text = url.sub('', text)
+    text = text.replace(u'．', u'。')
+    text = text.replace(u'，', u'、')
+    text = text.replace(u'「', '')
+    text = text.replace(u'」', '')
+    text = text.replace(u'？', u'?')
+    text = text.replace(u'！', u'!')
+    print text 
 
 class YonoBot(object):
     def __init__(self):
@@ -29,6 +41,9 @@ class YonoBot(object):
                            self.t_ini['access_token_secret']
                         )
         self.parser = twilogparser.TwilogParser()
+        
+        self.reply = ""
+        self.url = ""
 
     def _load_ini(self,category):
         parser = SafeConfigParser()
@@ -63,9 +78,11 @@ class YonoBot(object):
 
     def learn(self, tweets):
         for tweet in tweets:
-            sentences = tweet.split(u'。')
+            text = self.parse_tweet(tweet)
+            sentences = text.split(u'。')
             for sentence in sentences:
                 self.m.analyze_sentence(sentence+u'。', self.t_ini['user'])
+        self.m.register_data()
 
     def post(self):
         self.api.status_update(self.m.make_sentence(user=self.t_ini['user']))
