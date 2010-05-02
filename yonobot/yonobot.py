@@ -113,12 +113,12 @@ class YonoBot(object):
 
     def follow_users(self):
         followers_dict = {}
-        followers = bot.api.followers_ids()
+        followers = self.api.followers_ids()
         for follower in followers:
             followers_dict[follower] = 0
 
         friends_dict = {}
-        friends = bot.api.friends_ids()
+        friends = self.api.friends_ids()
         for friend in friends:
             friends_dict[friend] = 0
 
