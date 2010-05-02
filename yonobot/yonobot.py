@@ -4,18 +4,17 @@ import datetime
 from ConfigParser import SafeConfigParser
 from HTMLParser import HTMLParser
 import os
+import re
 import urllib2
 import twoauth
 from markovchains import markovchains
 import twilogparser
 
 def parse_tweet(text):
-    if not self.reply:
-        reply = re.compile(u'@[\S]+')
-    if not self.url:
-        url = re.compile(r's?https?://[-_.!~*\'()a-zA-Z0-9;/?:@&=+$,%#]+',re.I)
+    reply = re.compile(u'@[\S]+')
+    url = re.compile(r's?https?://[-_.!~*\'()a-zA-Z0-9;/?:@&=+$,%#]+',re.I)
 
-    text = reply.sub('', line)
+    text = reply.sub('', text)
     text = url.sub('', text)
     text = text.replace(u'．', u'。')
     text = text.replace(u'，', u'、')
@@ -78,7 +77,7 @@ class YonoBot(object):
 
     def learn(self, tweets):
         for tweet in tweets:
-            text = self.parse_tweet(tweet)
+            text = parse_tweet(tweet)
             sentences = text.split(u'。')
             for sentence in sentences:
                 self.m.analyze_sentence(sentence+u'。', self.t_ini['user'])
