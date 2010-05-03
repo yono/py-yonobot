@@ -83,8 +83,11 @@ class YonoBot(object):
                 self.m.analyze_sentence(sentence+u'。', self.t_ini['user'])
         self.m.register_data()
 
+    def say(self):
+        return self.m.make_sentence(user=self.t_ini['user'])
+
     def post(self):
-        self.api.status_update(self.m.make_sentence(user=self.t_ini['user']))
+        self.api.status_update(self.say())
     
     def reply_to_mentions(self):
         since_id = self.get_since_id()
