@@ -6,5 +6,5 @@ import datetime
 if __name__ == '__main__':
     bot = yonobot.YonoBot()
     yesterday = datetime.date.today() - datetime.timedelta(days=1)
-    tweets = bot.crawl_twilog(yesterday)
-    bot.learn(tweets)
+    #tweets = bot.crawl_twilog(yesterday)
+    bot.learn(yesterday)

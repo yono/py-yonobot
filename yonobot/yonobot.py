@@ -2,13 +2,12 @@
 # -*- coding:utf-8 -*-
 import datetime
 from ConfigParser import SafeConfigParser
-from HTMLParser import HTMLParser
 import os
 import re
 import urllib2
 import twoauth
 from markovchains import markovchains
-import twilogparser
+from twilog import twilog
 
 def parse_tweet(text):
     reply = re.compile(u'@[\S]+')
@@ -25,12 +24,13 @@ def parse_tweet(text):
     return text 
 
 class YonoBot(object):
+
     def __init__(self):
         self.BASE_DIR = os.path.dirname(os.path.abspath(__file__))
         self.inifile = os.path.join(self.BASE_DIR, 'settings.ini')
         self.t_ini = self._load_ini('twitter')
         self.m_ini = self._load_ini('markov')
-        self.base_url = "http://twilog.org/%s/date-" % (self.t_ini['user'])
+        #self.base_url = "http://twilog.org/%s/date-" % (self.t_ini['user'])
         self.m = markovchains.MarkovChains(self.m_ini['db'], 
                                            int(self.m_ini['num']))
         self.api = twoauth.api(
@@ -39,7 +39,7 @@ class YonoBot(object):
                            self.t_ini['access_token'], 
                            self.t_ini['access_token_secret']
                         )
-        self.parser = twilogparser.TwilogParser()
+        self.log = twilog.Twilog()
         
         self.reply = ""
         self.url = ""
@@ -57,25 +57,26 @@ class YonoBot(object):
             result[d] = parser.get(category, d)
         return result
     
-    def format_date(self,date):
-        return date if len(date) == 2 else "0%s" % (date)
+    #def format_date(self,date):
+    #    return date if len(date) == 2 else "0%s" % (date)
 
-    def get_date_url(self, aday):
-        year = str(aday.year)[2:4]
-        month = self.format_date(str(aday.month))
-        day = self.format_date(str(aday.day))
-        return "%s%s%s" % (year,month,day)
+    #def get_date_url(self, aday):
+    #    year = str(aday.year)[2:4]
+    #    month = self.format_date(str(aday.month))
+    #    day = self.format_date(str(aday.day))
+    #    return "%s%s%s" % (year,month,day)
 
-    def crawl_twilog(self, aday):
-        url = "%s%s" % (self.base_url,self.get_date_url(aday))
+    #def crawl_twilog(self, aday):
+    #    url = "%s%s" % (self.base_url,self.get_date_url(aday))
 
-        fp = urllib2.urlopen(url)
-        body = unicode(fp.read())
+    #    fp = urllib2.urlopen(url)
+    #    body = unicode(fp.read())
 
-        self.parser.feed(unicode(body))
-        return self.parser.sentences
+    #    self.parser.feed(unicode(body))
+    #    return self.parser.sentences
 
-    def learn(self, tweets):
+    def learn(self, aday):
+        tweets = self.log.get_tweets(self.t_ini['user'],aday)
         for tweet in tweets:
             text = parse_tweet(tweet)
             sentences = text.split(u'。')
@@ -132,5 +133,5 @@ class YonoBot(object):
 if __name__ == "__main__":
     bot = YonoBot()
     yesterday = datetime.date.today() - datetime.timedelta(days=1)
-    results = bot.crawl_twilog(yesterday)
+    #results = bot.crawl_twilog(yesterday)
     print '\n'.join(results)
