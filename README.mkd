@@ -9,6 +9,7 @@ yonobot は Twitter に定期的に発言する Bot です。
 
 - [twoauth](http://www.techno-st.net/wiki/Python-twoauth)
 - [markovchains](http://github.com/yono/python-markovchains)
+- [twilog](http://github.com/yono/py-twilog)
 
 ## Usage
 
