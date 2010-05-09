@@ -9,9 +9,10 @@ import twoauth
 from markovchains import markovchains
 from twilog import twilog
 
+
 def parse_tweet(text):
     reply = re.compile(u'@[\S]+')
-    url = re.compile(r's?https?://[-_.!~*\'()a-zA-Z0-9;/?:@&=+$,%#]+',re.I)
+    url = re.compile(r's?https?://[-_.!~*\'()a-zA-Z0-9;/?:@&=+$,%#]+', re.I)
 
     text = reply.sub('', text)
     text = url.sub('', text)
@@ -21,7 +22,8 @@ def parse_tweet(text):
     text = text.replace(u'」', '')
     text = text.replace(u'？', u'?')
     text = text.replace(u'！', u'!')
-    return text 
+    return text
+
 
 class YonoBot(object):
 
@@ -30,20 +32,18 @@ class YonoBot(object):
         self.inifile = os.path.join(self.BASE_DIR, 'settings.ini')
         self.t_ini = self._load_ini('twitter')
         self.m_ini = self._load_ini('markov')
-        self.m = markovchains.MarkovChains(self.m_ini['db'], 
+        self.m = markovchains.MarkovChains(self.m_ini['db'],
                                            int(self.m_ini['num']))
         self.api = twoauth.api(
-                           self.t_ini['consumer_key'], 
+                           self.t_ini['consumer_key'],
                            self.t_ini['consumer_secret'],
-                           self.t_ini['access_token'], 
-                           self.t_ini['access_token_secret']
-                        )
+                           self.t_ini['access_token'],
+                           self.t_ini['access_token_secret'])
         self.log = twilog.Twilog()
-        
         self.reply = ""
         self.url = ""
 
-    def _load_ini(self,category):
+    def _load_ini(self, category):
         parser = SafeConfigParser()
         parser.readfp(open(self.inifile))
         result = {}
@@ -55,14 +55,14 @@ class YonoBot(object):
         for d in data:
             result[d] = parser.get(category, d)
         return result
-    
+
     def learn(self, aday):
-        tweets = self.log.get_tweets(self.t_ini['user'],aday)
+        tweets = self.log.get_tweets(self.t_ini['user'], aday)
         for tweet in tweets:
             text = parse_tweet(tweet)
             sentences = text.split(u'。')
             for sentence in sentences:
-                self.m.analyze_sentence(sentence+u'。', self.t_ini['user'])
+                self.m.analyze_sentence(sentence + u'。', self.t_ini['user'])
         self.m.register_data()
 
     def say(self):
@@ -70,7 +70,7 @@ class YonoBot(object):
 
     def post(self):
         self.api.status_update(self.say())
-    
+
     def reply_to_mentions(self):
         since_id = self.get_since_id()
         mentions = self.api.mentions(since_id=since_id)
@@ -83,7 +83,7 @@ class YonoBot(object):
                 self.api.status_update(text)
             last_since_id = mentions[-1]['id']
             self.save_since_id(last_since_id)
- 
+
     def get_since_id(self):
         file = open(os.path.join(self.BASE_DIR, 'last_since_id.txt'))
         since_id = int(file.read())
