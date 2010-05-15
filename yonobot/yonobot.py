@@ -8,7 +8,7 @@ import urllib2
 import twoauth
 from markovchains import markovchains
 from twilog import twilog
-
+import do_shiritori
 
 def parse_tweet(text):
     reply = re.compile(u'@[\S]+')
@@ -75,12 +75,27 @@ class YonoBot(object):
         since_id = self.get_since_id()
         mentions = self.api.mentions(since_id=since_id)
 
+        shiritori = re.compile(u'^しりとり\s(.*)', re.I | re.U)
+        reply_start = re.compile(u'(@.+?)\s', re.I | re.U)
+
         if len(mentions) > 0:
             for status in mentions:
                 screen_name = status['user']['screen_name']
-                text = self.m.make_sentence(user=self.t_ini['user'])
+                to_text = reply_start.sub('', status['text'])
+
+                if isinstance(to_text, str):
+                    to_text = to_text.decode('utf-8')
+
+                result = shiritori.search(to_text)
+
+                if result is None:
+                    text = self.m.make_sentence(user=self.t_ini['user'])
+                else:
+                    to_text = result.group().encode('utf-8')
+                    text = do_shiritori.reply(to_text)
                 text = "@%s %s" % (screen_name, text)
                 self.api.status_update(text)
+
             last_since_id = mentions[-1]['id']
             self.save_since_id(last_since_id)
 
