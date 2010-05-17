@@ -34,7 +34,7 @@ class YonoBot(object):
         self.m_ini = self._load_ini('markov')
         self.m = markovchains.MarkovChains(self.m_ini['db'],
                                            int(self.m_ini['num']))
-        self.m.load_db()
+        self.m.db.load_db()
         self.api = twoauth.api(
                            self.t_ini['consumer_key'],
                            self.t_ini['consumer_secret'],
@@ -90,7 +90,7 @@ class YonoBot(object):
                 result = shiritori.search(to_text)
 
                 if result is None:
-                    text = self.m.make_sentence(user=self.t_ini['user'])
+                    text = self.m.db.make_sentence(user=self.t_ini['user'])
                 else:
                     to_text = result.group().encode('utf-8')
                     text = do_shiritori.reply(to_text)
