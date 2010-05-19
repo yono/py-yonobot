@@ -34,7 +34,7 @@ class YonoBot(object):
         self.m_ini = self._load_ini('markov')
         self.m = markovchains.MarkovChains(self.m_ini['db'],
                                            int(self.m_ini['num']))
-        self.m.db.load_db()
+        self.m.load_db('mysql')
         self.api = twoauth.api(
                            self.t_ini['consumer_key'],
                            self.t_ini['consumer_secret'],
