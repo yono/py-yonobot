@@ -32,9 +32,8 @@ class YonoBot(object):
         self.inifile = os.path.join(self.BASE_DIR, 'settings.ini')
         self.t_ini = self._load_ini('twitter')
         self.m_ini = self._load_ini('markov')
-        self.m = markovchains.MarkovChains(self.m_ini['db'],
-                                           int(self.m_ini['num']))
-        self.m.load_db('mysql')
+        self.m = markovchains.MarkovChains(int(self.m_ini['num']))
+        self.m.load_db('mysql', self.m_ini['db'])
         self.api = twoauth.api(
                            self.t_ini['consumer_key'],
                            self.t_ini['consumer_secret'],
