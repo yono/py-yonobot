@@ -26,3 +26,5 @@ yonobot は Twitter に定期的に発言する Bot です。
 3. リプライに対して返事
 
     % python reply.py
+
+TODO: OAuth の詳細説明
